@@ -1,13 +1,39 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = require("express");
-var ensureAuthenticated_1 = __importDefault(require("@modules/users/infra/http/middlewares/ensureAuthenticated"));
-var ProvidersController_1 = __importDefault(require("../controllers/ProvidersController"));
-var providersRouter = express_1.Router();
-var providersController = new ProvidersController_1.default();
-providersRouter.use(ensureAuthenticated_1.default);
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _express = require("express");
+
+var _celebrate = require("celebrate");
+
+var _ensureAuthenticated = _interopRequireDefault(require(".src/modules/users/infra/http/middlewares/ensureAuthenticated"));
+
+var _ProvidersController = _interopRequireDefault(require("../controllers/ProvidersController"));
+
+var _ProviderMonthAvalabilityController = _interopRequireDefault(require("../controllers/ProviderMonthAvalabilityController"));
+
+var _ProviderDayAvalabilityController = _interopRequireDefault(require("../controllers/ProviderDayAvalabilityController"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const providersRouter = (0, _express.Router)();
+const providersController = new _ProvidersController.default();
+const providerMonthAvalabilityController = new _ProviderMonthAvalabilityController.default();
+const providerDayAvalabilityController = new _ProviderDayAvalabilityController.default();
+providersRouter.use(_ensureAuthenticated.default);
 providersRouter.get('/', providersController.index);
-exports.default = providersRouter;
+providersRouter.get('/:provider_id/month-availability', (0, _celebrate.celebrate)({
+  [_celebrate.Segments.PARAMS]: {
+    provider_id: _celebrate.Joi.string().uuid().required()
+  }
+}), providerMonthAvalabilityController.index);
+providersRouter.get('/:provider_id/day-availability', (0, _celebrate.celebrate)({
+  [_celebrate.Segments.PARAMS]: {
+    provider_id: _celebrate.Joi.string().uuid().required()
+  }
+}), providerDayAvalabilityController.index);
+var _default = providersRouter;
+exports.default = _default;

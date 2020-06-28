@@ -1,11 +1,25 @@
 "use strict";
-var __importDefault = (this && this.__importDefault) || function (mod) {
-    return (mod && mod.__esModule) ? mod : { "default": mod };
-};
-Object.defineProperty(exports, "__esModule", { value: true });
-var express_1 = require("express");
-var SessionsController_1 = __importDefault(require("../controllers/SessionsController"));
-var sessionsRouter = express_1.Router();
-var sessionsController = new SessionsController_1.default();
-sessionsRouter.post('/', sessionsController.create);
-exports.default = sessionsRouter;
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.default = void 0;
+
+var _express = require("express");
+
+var _celebrate = require("celebrate");
+
+var _SessionsController = _interopRequireDefault(require("../controllers/SessionsController"));
+
+function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+const sessionsRouter = (0, _express.Router)();
+const sessionsController = new _SessionsController.default();
+sessionsRouter.post('/', (0, _celebrate.celebrate)({
+  [_celebrate.Segments.BODY]: {
+    email: _celebrate.Joi.string().email().required(),
+    password: _celebrate.Joi.string().required()
+  }
+}), sessionsController.create);
+var _default = sessionsRouter;
+exports.default = _default;
